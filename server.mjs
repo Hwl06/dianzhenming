@@ -475,7 +475,7 @@ const server = http.createServer(async (req, res) => {
 });
 await ensureDataDir();
 await writeFile(join(dataDir, 'server.pid'), String(process.pid));
-server.listen(port, '127.0.0.1', () => {
+server.listen(port, '0.0.0.0', () => {
   log('info', `电诊明 v${VERSION} 启动`, { port, mode: apiKey ? 'online' : 'local' });
   console.log(`电诊明 v${VERSION} 运行于 http://localhost:${port}${apiKey ? '（联网模式）' : '（本地规则模式）'}`);
 });
