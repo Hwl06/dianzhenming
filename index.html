@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <title>电诊明 · 设备诊断工作台</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./assets/vendor/marked.umd.js"></script>
+  <script src="./assets/vendor/purify.min.js"></script>
+</head>
+<body>
+  <div id="cover" class="cover" role="dialog" aria-modal="true" aria-labelledby="coverTitle">
+    <div class="ecg-container" aria-hidden="true">
+      <svg class="ecg-svg" viewBox="0 0 1440 100" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="ecgFade" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#00F0FF" stop-opacity="0" />
+            <stop offset="15%" stop-color="#00F0FF" stop-opacity="1" />
+            <stop offset="85%" stop-color="#00F0FF" stop-opacity="1" />
+            <stop offset="100%" stop-color="#00F0FF" stop-opacity="0" />
+          </linearGradient>
+          <path id="ecgPath" d="M 0,80 L 500,80 L 540,60 L 560,95 L 580,80 L 680,80 L 720,0 L 740,100 L 760,80 L 1440,80" />
+        </defs>
+        <use href="#ecgPath" class="ecg-line" />
+        <circle r="3.5" class="ecg-pulse">
+          <animateMotion dur="4s" repeatCount="indefinite" begin="2s"><mpath href="#ecgPath" /></animateMotion>
+        </circle>
+      </svg>
+    </div>
+    <div class="cover-content">
+      <div class="cover-icon" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none"><path d="M27 4 11 26h12l-2 18 16-23H25l2-17Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <p class="cover-kicker">ELECTRICAL DIAGNOSTICS</p>
+      <h1 id="coverTitle" class="cover-title">欢迎使用<br><span>电诊明</span></h1>
+      <p class="cover-subtitle">面向现场的电气设备诊断与安全排查助手</p>
+      <button class="cover-enter" id="enterBtn" type="button">开始诊断 <span aria-hidden="true">→</span></button>
+      <p class="cover-note">辅助排查 · 安全优先 · 结果需现场复核</p>
+    </div>
+  </div>
+  <header class="topbar">
+    <a class="brand" href="#diagnosis" aria-label="电诊明诊断中心" data-view-target="diagnosis">
+      <span class="brand-mark" aria-hidden="true">D</span>
+      <span class="brand-copy"><strong>电诊明</strong><small>设备诊断工作台</small></span>
+    </a>
+    <nav class="main-nav" aria-label="主导航" role="tablist">
+      <button id="nav-diagnosis" class="nav-link is-active" type="button" role="tab" aria-selected="true" aria-current="page" aria-controls="view-diagnosis" data-view-target="diagnosis">诊断中心</button>
+      <button id="nav-history" class="nav-link" type="button" role="tab" aria-selected="false" aria-controls="view-history" data-view-target="history">历史记录</button>
+      <button id="nav-knowledge" class="nav-link" type="button" role="tab" aria-selected="false" aria-controls="view-knowledge" data-view-target="knowledge">手册 / 知识库</button>
+      <button id="nav-about" class="nav-link" type="button" role="tab" aria-selected="false" aria-controls="view-about" data-view-target="about">关于 / 帮助</button>
+    </nav>
+    <div class="topbar-status"><span class="status-dot"></span><span>安全优先</span></div>
+  </header>
+
+  <main class="app-main">
+    <section class="view is-visible" id="view-diagnosis" data-view-panel="diagnosis" role="tabpanel" aria-labelledby="nav-diagnosis">
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">FIELD DIAGNOSTICS · 01</p>
+          <h1>诊断中心</h1>
+          <p class="lede">从现场现象与测量数据，生成可复核的排查路径。</p>
+        </div>
+        <div class="heading-note"><span class="live-dot" id="service-dot"></span> 本地规则可用 <span class="divider">/</span> <span id="service-status">正在检查联网服务…</span></div>
+      </div>
+
+      <div class="safety-banner"><span class="safety-symbol">!</span><div><strong>先确认现场安全</strong><span>出现冒烟、火花、焦糊味或异常发热时，停止操作并按现场应急规程处置。</span></div></div>
+
+      <section class="example-strip" aria-labelledby="exampleTitle">
+        <div class="strip-heading"><h2 id="exampleTitle">快速案例</h2><span>选择一个案例填入表单</span></div>
+        <div class="examples">
+          <button class="example" type="button" data-id="motor">电机三相不平衡</button>
+          <button class="example" type="button" data-id="cabinet">配电柜接点发热</button>
+          <button class="example" type="button" data-id="drive">变频器加速过流</button>
+          <button class="example" type="button" data-id="hazard">配电柜焦糊冒烟</button>
+        </div>
+      </section>
+
+      <div class="grid">
+        <section class="card input-card" aria-labelledby="inputTitle">
+          <div class="card-heading"><div><p class="eyebrow">INPUT</p><h2 id="inputTitle">现场信息</h2></div><span class="step-index">01 / 03</span></div>
+          <h3 class="form-section-title">安全确认</h3>
+          <div class="safety-checks">
+            <label><input type="checkbox" id="sPoweredOff" checked><span class="check-ui"></span>已切断上级电源</label>
+            <label><input type="checkbox" id="sVerified" checked><span class="check-ui"></span>已验电</label>
+            <label><input type="checkbox" id="sLocked" checked><span class="check-ui"></span>已挂牌上锁</label>
+            <label class="danger"><input type="checkbox" id="sHazard"><span class="check-ui"></span>现场有冒烟 / 焦糊 / 火花 / 异味</label>
+          </div>
+
+          <h3 class="form-section-title">设备与现象</h3>
+          <div class="field"><label for="device">设备类型</label>
+            <select id="device"><option>三相异步电动机</option><option>低压配电柜</option><option>变频器</option><option>未知设备</option></select>
+          </div>
+          <div class="field"><label for="symptom">现场现象 <span class="required">必填</span></label>
+            <textarea id="symptom" placeholder="描述异常表现、发生时机和持续时间"></textarea>
+          </div>
+          <div class="field"><label for="fileUpload">现场照片或文件 <span class="field-hint">最多 3 个，单个不超过 5 MB</span></label>
+            <input type="file" id="fileUpload" accept="image/jpeg,image/png,image/webp,text/plain,application/pdf,.txt,.pdf" multiple>
+            <div id="filePreview" class="file-preview"></div>
+            <div id="fileStatus" class="file-status" aria-live="polite"></div>
+          </div>
+          <div class="field"><label for="alarm">报警代码 <span class="field-hint">可选</span></label><input id="alarm" placeholder="例如：E-OC、过载、无"></div>
+
+          <details class="measure-details">
+            <summary><span>测量值</span><span class="optional-tag">可选 · 填写后更准确</span></summary>
+            <div class="measure-grid">
+              <label>A 相电流(A)<input id="currentA" inputmode="decimal"></label>
+              <label>B 相电流(A)<input id="currentB" inputmode="decimal"></label>
+              <label>C 相电流(A)<input id="currentC" inputmode="decimal"></label>
+              <label>A 相电压(V)<input id="voltageA" inputmode="decimal"></label>
+              <label>B 相电压(V)<input id="voltageB" inputmode="decimal"></label>
+              <label>C 相电压(V)<input id="voltageC" inputmode="decimal"></label>
+              <label>设备温度(℃)<input id="temperature" inputmode="decimal"></label>
+              <label>环境温度(℃)<input id="ambient" inputmode="decimal"></label>
+              <label>负载率(%)<input id="load" inputmode="decimal"></label>
+            </div>
+            <div class="field"><label for="extra">补充说明</label><textarea id="extra" placeholder="例如：端子温度约 78℃，负载约 85%"></textarea></div>
+          </details>
+
+          <div class="actions"><button class="btn primary" id="run" type="button">生成诊断 <span aria-hidden="true">→</span></button><button class="btn secondary" id="clear" type="button">清空</button></div>
+          <p class="foot">诊断结果仅辅助排查，不能替代持证电工现场判断。<br>输出上限：摘要 30 字；原因、步骤各最多 3 条；维修动作最多 2 条。</p>
+        </section>
+
+        <section class="card result" id="result" aria-live="polite" aria-label="诊断结果">
+          <div class="empty"><span class="empty-mark" aria-hidden="true">＋</span><strong>等待诊断</strong><span>完成安全确认并描述现场现象后开始分析。</span></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="view" id="view-history" data-view-panel="history" role="tabpanel" aria-labelledby="nav-history" hidden>
+      <div class="page-heading"><div><p class="eyebrow">RECORDS · 02</p><h1>历史记录</h1><p class="lede">查看本机保存的近期诊断与风险等级。</p></div><button class="btn secondary" id="historyRefresh" type="button">刷新记录 ↻</button></div>
+      <section class="card history-card"><div class="list-heading"><div><h2>诊断记录</h2><p>数据由本地服务的 GET /api/history 接口提供。</p></div><span class="list-caption">最近记录</span></div><div class="history-list" id="historyList"><p class="loading-line">正在读取历史记录…</p></div></section>
+      <p class="foot page-foot">历史记录保存在运行服务的本机项目目录中。</p>
+    </section>
+
+    <section class="view" id="view-knowledge" data-view-panel="knowledge" role="tabpanel" aria-labelledby="nav-knowledge" hidden>
+      <div class="page-heading"><div><p class="eyebrow">REFERENCE · 03</p><h1>手册 / 知识库</h1><p class="lede">当前项目随附的参考资料，供规则与检索增强诊断使用。</p></div></div>
+      <div class="knowledge-grid">
+        <article class="card knowledge-card"><span class="doc-type">规则案例</span><h2>电诊明规则导出</h2><p>整理电机、配电柜、变频器及高危迹象的诊断案例与处理边界。</p><div class="doc-meta">knowledge/rules-export.md <span>7 个场景</span></div><a class="text-link" href="/api/file?path=rules-export.md" data-reader-file="rules-export.md">打开参考文件 ↗</a></article>
+        <article class="card knowledge-card"><span class="doc-type">检索种子</span><h2>测试知识库</h2><p>用于 RAG 检索验证的设备故障片段，包含电机、过流、端子发热和高危处理。</p><div class="doc-meta">knowledge/seed.md <span>5 个主题</span></div><a class="text-link" href="/api/file?path=seed.md" data-reader-file="seed.md">打开参考文件 ↗</a></article>
+      </div>
+      <div class="notice-card"><strong>资料说明</strong><p>这里展示的是项目中实际存在的规则导出与检索种子文件，不代表设备制造商的完整维修手册。现场检修请优先遵循设备厂家文件、作业票和适用规程。</p></div>
+    </section>
+
+    <section class="view" id="view-about" data-view-panel="about" role="tabpanel" aria-labelledby="nav-about" hidden>
+      <div class="page-heading"><div><p class="eyebrow">GUIDE · 04</p><h1>关于 / 帮助</h1><p class="lede">了解工具用途、数据处理方式与安全边界。</p></div></div>
+      <div class="about-grid">
+        <article class="card about-card"><span class="about-number">01</span><h2>工具用途</h2><p>电诊明根据设备类型、现场现象、安全确认和测量值，生成辅助诊断、排查顺序与维修作业指导草案，帮助整理现场信息和交接记录。</p></article>
+        <article class="card about-card"><span class="about-number">02</span><h2>安全注意事项</h2><p>严格执行断电、验电、挂牌上锁及现场作业规程。出现冒烟、火花、焦糊味或其他危险迹象时，停止检修并按应急流程升级处置。任何诊断内容都需授权人员现场复核。</p></article>
+        <article class="card about-card"><span class="about-number">03</span><h2>本地规则与联网 AI</h2><p><strong>本地规则：</strong>在浏览器本地运行，无需 API Key；适用于离线基础诊断。<br><strong>联网 AI：</strong>通过本地服务转发到已配置的模型，结合检索资料生成结果；需要网络和服务端 API Key。密钥保留在服务端配置中，不放在网页代码里。</p></article>
+        <article class="card about-card"><span class="about-number">04</span><h2>无法连接时</h2><p>确认项目后端已启动并能访问服务地址。联网分析不可用时，页面会尽量回退至本地规则诊断；历史记录需要通过本地服务读取。</p></article>
+      </div>
+      <p class="foot page-foot">电诊明是辅助工具，不构成安全许可、专业检测或设备维修授权。</p>
+    </section>
+  </main>
+  <div id="ai-assistant" class="ai-assistant">
+    <section id="assistant-chat-box" class="assistant-chat-box assistant-hidden" aria-label="电诊明助手聊天窗口" aria-hidden="true">
+      <div class="assistant-chat-header"><strong>🔧 电诊明助手</strong><button type="button" class="assistant-close" id="assistant-close" aria-label="关闭聊天窗口">×</button></div>
+      <div id="assistant-chat-history" class="assistant-chat-history" aria-live="polite"><div class="assistant-message assistant-ai">你好！我是电诊明助手，可以问我电气故障和安全排查问题。</div></div>
+      <form class="assistant-chat-input" id="assistant-chat-form"><input type="text" id="assistant-input" maxlength="1000" placeholder="例如：三相不平衡怎么办？" aria-label="输入你的问题"><button id="assistant-send" type="submit">发送</button></form>
+    </section>
+    <button class="assistant-avatar" id="assistant-avatar" type="button" aria-label="打开电诊明助手" aria-expanded="false" title="按住拖动；点击打开电诊明助手">
+      <img src="./assets/assistant-mascot.png" alt="电诊明蓝色机器人" draggable="false">
+    </button>
+  </div>
+  <div id="reader-modal" class="reader-modal" role="dialog" aria-modal="true" aria-labelledby="reader-title" hidden>
+    <div class="reader-overlay" data-reader-close aria-hidden="true"></div>
+    <section class="reader-container" aria-label="知识库文件阅读器">
+      <header class="reader-header">
+        <div><span class="reader-kicker">KNOWLEDGE BASE</span><h2 id="reader-title">手册详情</h2></div>
+        <button class="reader-close" type="button" data-reader-close aria-label="关闭阅读器">×</button>
+      </header>
+      <div class="reader-body markdown-body" id="reader-content"><p class="muted">加载中…</p></div>
+    </section>
+  </div>
+  <script src="./rules.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
+
+
+

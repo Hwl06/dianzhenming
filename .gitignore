@@ -1,0 +1,8 @@
+.env
+*.log
+node_modules/
+*.bak
+*.pid
+data/
+backup/
+

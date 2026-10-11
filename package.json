@@ -1,0 +1,17 @@
+{
+  "name": "dianzhenming-rag",
+  "version": "1.0.6",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "build-rag": "node ingest/index-docs.mjs",
+    "test-rag": "node test-rag.mjs",
+    "smoke": "node smoke-test.mjs",
+    "export-rules": "node scripts/rules-to-docs.mjs"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.0"
+  }
+}
+
