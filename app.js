@@ -276,7 +276,15 @@ async function run() {
       body: JSON.stringify(x)
     });
     if (res.ok) {
-      render(await res.json());
+      const result = await res.json();
+      render(result);
+      saveHistory({
+        device: x.device,
+        symptom: x.symptom,
+        riskLevel: result.riskLevel,
+        source: result.source,
+        ts: new Date().toISOString()
+      });
       loadHistory();
     } else {
       const err = await res.json().catch(() => ({}));
@@ -442,27 +450,36 @@ renderAttachments();
 
 
 
-async function loadHistory() {
+function loadHistory() {
   const box = $('historyList');
-  if (!box || location.protocol === 'file:') return;
-  box.innerHTML = '<p class="loading-line">正在读取历史记录…</p>';
+  if (!box) return;
   try {
-    const res = await fetch('/api/history?limit=100');
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    const items = Array.isArray(data.items) ? data.items : [];
+    const stored = JSON.parse(localStorage.getItem('dianzhen_history') || '[]');
+    const items = Array.isArray(stored) ? stored : [];
     if (!items.length) {
-      box.innerHTML = '<p class="loading-line">暂无历史记录。完成一次诊断后，记录会显示在这里。</p>';
+      box.innerHTML = '<p class="foot">暂无记录（您的历史记录仅保存在本机浏览器中）</p>';
       return;
     }
-    box.innerHTML = items.map(item => {
+    box.innerHTML = items.slice(0, 10).map(item => {
       const timestamp = item.ts && Number.isFinite(Date.parse(item.ts)) ? new Date(item.ts).toLocaleString() : '时间未知';
       const risk = ['high', 'medium', 'low'].includes(item.riskLevel) ? item.riskLevel : 'low';
       const riskText = risk === 'high' ? '高风险' : risk === 'medium' ? '需谨慎' : '建议复核';
       return `<article class="history-item"><div class="history-main"><strong>${esc(item.device || '未知设备')}</strong><span>${esc(item.symptom || '未填写现象')}</span><small>${esc(timestamp)} · ${item.source === 'ai' ? '联网 AI' : '本地规则'}</small></div><span class="risk ${risk}">${riskText}</span></article>`;
     }).join('');
-  } catch {
-    box.innerHTML = '<p class="loading-line error-line">历史记录暂时无法读取。请确认本机服务已启动后重试。</p>';
+  } catch (e) {
+    console.error('读取历史记录失败', e);
+    box.innerHTML = '<p class="loading-line error-line">读取本机历史记录失败。</p>';
+  }
+}
+function saveHistory(item) {
+  try {
+    const stored = JSON.parse(localStorage.getItem('dianzhen_history') || '[]');
+    const items = Array.isArray(stored) ? stored : [];
+    items.unshift(item);
+    if (items.length > 20) items.length = 20;
+    localStorage.setItem('dianzhen_history', JSON.stringify(items));
+  } catch (e) {
+    console.error('保存历史记录失败', e);
   }
 }
 function activateView(name) {
@@ -493,7 +510,6 @@ $('historyRefresh')?.addEventListener('click', loadHistory);
 const requestedView = location.hash.slice(1);
 activateView(['diagnosis', 'history', 'knowledge', 'about'].includes(requestedView) ? requestedView : 'diagnosis');
 if (requestedView !== 'history') loadHistory();
-setInterval(loadHistory,30000);
 
 })();
 // 欢迎封面进入逻辑

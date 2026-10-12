@@ -129,8 +129,8 @@
 
     <section class="view" id="view-history" data-view-panel="history" role="tabpanel" aria-labelledby="nav-history" hidden>
       <div class="page-heading"><div><p class="eyebrow">RECORDS · 02</p><h1>历史记录</h1><p class="lede">查看本机保存的近期诊断与风险等级。</p></div><button class="btn secondary" id="historyRefresh" type="button">刷新记录 ↻</button></div>
-      <section class="card history-card"><div class="list-heading"><div><h2>诊断记录</h2><p>数据由本地服务的 GET /api/history 接口提供。</p></div><span class="list-caption">最近记录</span></div><div class="history-list" id="historyList"><p class="loading-line">正在读取历史记录…</p></div></section>
-      <p class="foot page-foot">历史记录保存在运行服务的本机项目目录中。</p>
+      <section class="card history-card"><div class="list-heading"><div><h2>诊断记录</h2><p>诊断记录保存在当前浏览器中。</p></div><span class="list-caption">最近记录</span></div><div class="history-list" id="historyList"><p class="loading-line">正在读取历史记录…</p></div></section>
+      <p class="foot page-foot">历史记录保存在当前浏览器中；清除浏览器数据会删除记录。</p>
     </section>
 
     <section class="view" id="view-knowledge" data-view-panel="knowledge" role="tabpanel" aria-labelledby="nav-knowledge" hidden>
@@ -148,7 +148,7 @@
         <article class="card about-card"><span class="about-number">01</span><h2>工具用途</h2><p>电诊明根据设备类型、现场现象、安全确认和测量值，生成辅助诊断、排查顺序与维修作业指导草案，帮助整理现场信息和交接记录。</p></article>
         <article class="card about-card"><span class="about-number">02</span><h2>安全注意事项</h2><p>严格执行断电、验电、挂牌上锁及现场作业规程。出现冒烟、火花、焦糊味或其他危险迹象时，停止检修并按应急流程升级处置。任何诊断内容都需授权人员现场复核。</p></article>
         <article class="card about-card"><span class="about-number">03</span><h2>本地规则与联网 AI</h2><p><strong>本地规则：</strong>在浏览器本地运行，无需 API Key；适用于离线基础诊断。<br><strong>联网 AI：</strong>通过本地服务转发到已配置的模型，结合检索资料生成结果；需要网络和服务端 API Key。密钥保留在服务端配置中，不放在网页代码里。</p></article>
-        <article class="card about-card"><span class="about-number">04</span><h2>无法连接时</h2><p>确认项目后端已启动并能访问服务地址。联网分析不可用时，页面会尽量回退至本地规则诊断；历史记录需要通过本地服务读取。</p></article>
+        <article class="card about-card"><span class="about-number">04</span><h2>无法连接时</h2><p>确认项目后端已启动并能访问服务地址。联网分析不可用时，页面会尽量回退至本地规则诊断；历史记录保存在当前浏览器中。</p></article>
       </div>
       <p class="foot page-foot">电诊明是辅助工具，不构成安全许可、专业检测或设备维修授权。</p>
     </section>

@@ -462,12 +462,6 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && url === '/api/chat') return await handleAssistantChat(req, res, ip);
     if (req.method === 'GET' && url === '/health') return json(res, 200, { ok: true, version: VERSION, aiEnabled: Boolean(apiKey), mode: apiKey ? 'online' : 'local', uptime: Math.round(process.uptime()), historyFile: existsSync(historyFile) });
     if (req.method === 'GET' && url === '/api/config') return json(res, 200, { version: VERSION, aiEnabled: Boolean(apiKey), model: apiKey ? model : null, historyMax });
-    if (req.method === 'GET' && url === '/api/history') {
-      const u = new URL(req.url, 'http://localhost');
-      const rawLimit = Number(u.searchParams.get('limit') || 20);
-      const limit = Number.isFinite(rawLimit) ? Math.max(1, Math.min(100, Math.trunc(rawLimit))) : 20;
-      return json(res, 200, { items: await readHistory(limit) });
-    }
     if (req.method === 'GET' && url === '/api/file') return await serveKnowledgeFile(req, res);
     if (req.method === 'GET' && await serveStatic(res, url)) return;
     res.writeHead(404, { ...SECURITY, 'content-type': 'text/plain; charset=utf-8' }); res.end('Not found');
